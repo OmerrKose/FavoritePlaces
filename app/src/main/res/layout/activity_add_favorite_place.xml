@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddFavoritePlace">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAddPlace"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/customToolbarStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollViewMain"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAddPlace">
+
+        <!-- TITLE -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/main_content_padding">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutTitle"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/edit_text_text_size" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- DESCRIPTION -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutDescription"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/add_screen_til_marginTop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutTitle">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/description"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/edit_text_text_size" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- DATE -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDescription">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date"
+                    android:inputType="text"
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/edit_text_text_size" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- LOCATION -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutLocation"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDate">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editTextLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/location"
+                    android:inputType="text"
+                    android:textColor="@color/primary_text_color"
+                    android:textColorHint="@color/secondary_text_color"
+                    android:textSize="@dimen/edit_text_text_size" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- IMAGE VIEW -->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewPlace"
+                android:layout_width="@dimen/add_screen_place_image_size"
+                android:layout_height="@dimen/add_screen_place_image_size"
+                android:layout_marginTop="@dimen/add_screen_til_marginTop"
+                android:background="@drawable/shape_image_view_border"
+                android:padding="@dimen/add_screen_place_image_padding"
+                android:scaleType="centerCrop"
+                android:src="@drawable/add_screen_image_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutLocation" />
+
+            <!-- ADD IMAGE BUTTON -->
+            <TextView
+                android:id="@+id/textViewAddImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/add_screen_text_add_image_marginTop"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:padding="@dimen/add_screen_text_add_image_padding"
+                android:text="@string/add_image"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/add_screen_text_add_image_text_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/buttonSave"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.45"
+                app:layout_constraintStart_toEndOf="@+id/imageViewPlace"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayoutLocation"
+                app:layout_constraintVertical_bias="0.019" />
+
+            <!-- SAVE BUTTON -->
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/add_screen_button_save_marginTop"
+                android:background="@drawable/shape_button_rounded"
+                android:gravity="center"
+                android:paddingTop="@dimen/add_screen_button_save_paddingTopBottom"
+                android:paddingBottom="@dimen/add_screen_button_save_paddingTopBottom"
+                android:text="@string/save"
+                android:textColor="@color/white"
+                android:textSize="@dimen/button_text_size"
+                app:backgroundTint="@color/button_background_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewPlace" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
