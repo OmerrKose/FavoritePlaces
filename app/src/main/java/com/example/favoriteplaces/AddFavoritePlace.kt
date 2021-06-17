@@ -151,11 +151,14 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
             )
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+
+                    // Here after all the permission are granted launch the gallery to select and image.
                     if (report!!.areAllPermissionsGranted()) {
                         val galleryIntent = Intent(
                             Intent.ACTION_PICK,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
+
                         startActivityForResult(galleryIntent, GALLERY)
                     }
                 }
