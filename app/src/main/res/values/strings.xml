@@ -7,4 +7,6 @@
     <string name="date">Date</string>
     <string name="description">Description</string>
     <string name="title">Title</string>
+    <string name="no_favorite_places_found_yet">No Favorite Places Found Yet! Add one from the button.</string>
+    <string name="image_content_description">image</string>
 </resources>

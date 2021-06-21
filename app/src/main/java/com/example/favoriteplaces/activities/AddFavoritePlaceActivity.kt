@@ -1,4 +1,4 @@
-package com.example.favoriteplaces
+package com.example.favoriteplaces.activities
 
 import android.Manifest
 import android.app.Activity
@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import com.example.favoriteplaces.R
+import com.example.favoriteplaces.database.DatabaseHandler
+import com.example.favoriteplaces.models.FavoritePlaceModel
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -34,21 +38,26 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Suppress("DEPRECATION")
-class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
+class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
 
     private var cal = Calendar.getInstance()
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
+    private var saveImageToInternalStorage: Uri? = null
+    private var mLatitude: Double = 0.0
+    private var mLongitude: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_favorite_place)
 
+        // Toolbar for the AddFavoritePlaceActivity
         setSupportActionBar(findViewById(R.id.toolbarAddPlace))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         findViewById<Toolbar>(R.id.toolbarAddPlace).setNavigationOnClickListener {
             onBackPressed()
         }
 
+        // Wait for user input in date
         dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -57,16 +66,19 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
 
                 updateDateInView()
             }
+        updateDateInView() // This function is called if the user does not enter any value for the date, and assign current date
 
         findViewById<AppCompatEditText>(R.id.editTextDate).setOnClickListener(this)
         findViewById<TextView>(R.id.textViewAddImage).setOnClickListener(this)
+        findViewById<Button>(R.id.buttonSave).setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
+            // Execute when clicked to the date section
             R.id.editTextDate -> {
                 DatePickerDialog(
-                    this@AddFavoritePlace,
+                    this@AddFavoritePlaceActivity,
                     dateSetListener,
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
@@ -74,6 +86,7 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
                 ).show()
             }
 
+            // Execute when clicked to add image button
             R.id.textViewAddImage -> {
                 val pictureDialog = AlertDialog.Builder(this)
                 pictureDialog.setTitle("Select Action")
@@ -88,6 +101,61 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
                     }
                 }
                 pictureDialog.show()
+            }
+
+            // Execute when clicked to save button
+            R.id.buttonSave -> {
+                /**
+                 * Check if the user entered values are empty or not
+                 * Title, Description, Location
+                 * Date is not checked, it is assigned as current date if not chosen
+                 * Then warn the user
+                 * If all the inputs are entered correctly then proceed...
+                 */
+                when {
+                    findViewById<AppCompatEditText>(R.id.editTextTitle).text.isNullOrEmpty() -> {
+                        Toast.makeText(this, "Please enter a title.", Toast.LENGTH_SHORT).show()
+                    }
+                    findViewById<AppCompatEditText>(R.id.editTextDescription).text.isNullOrEmpty() -> {
+                        Toast.makeText(this, "Please enter a description.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    findViewById<AppCompatEditText>(R.id.editTextLocation).text.isNullOrEmpty() -> {
+                        Toast.makeText(this, "Please enter a location.", Toast.LENGTH_SHORT).show()
+                    }
+                    /**
+                     * If all the credentials are entered correctly,
+                     * create model variable using the FavoritePlaceModel
+                     * store the created variable in the database using,
+                     * DatabaseHandler, then notify the user.
+                     */
+                    saveImageToInternalStorage == null -> {
+                        Toast.makeText(this, "Please choose an image.", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        val favoritePlace = FavoritePlaceModel(
+                            0,
+                            findViewById<AppCompatEditText>(R.id.editTextTitle).text.toString(),
+                            saveImageToInternalStorage.toString(),
+                            findViewById<AppCompatEditText>(R.id.editTextDescription).text.toString(),
+                            findViewById<AppCompatEditText>(R.id.editTextDate).text.toString(),
+                            findViewById<AppCompatEditText>(R.id.editTextLocation).text.toString(),
+                            mLatitude,
+                            mLongitude
+                        )
+                        val dataBaseHandler = DatabaseHandler(this) // Create a database object
+                        val addFavoritePlace = dataBaseHandler.addFavoritePlace(favoritePlace)
+
+                        if (addFavoritePlace > 0) {
+                            Toast.makeText(
+                                this,
+                                "Favorite place saved successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish() // Finish the activity, return to the main activity
+                        }
+                    }
+                }
             }
         }
     }
@@ -115,7 +183,7 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
                     try {
                         val selectedImageBitmap =
                             MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
-                        val saveImageToInternalStorage =
+                        saveImageToInternalStorage =
                             saveImageToInternalStorage(selectedImageBitmap)
                         Log.e("Saved Image: ", "Path :: $saveImageToInternalStorage")
                         findViewById<AppCompatImageView>(R.id.imageViewPlace)!!.setImageBitmap(
@@ -123,12 +191,13 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
                         )
                     } catch (e: IOException) {
                         e.printStackTrace()
-                        Toast.makeText(this@AddFavoritePlace, "Failed!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AddFavoritePlaceActivity, "Failed!", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             } else if (requestCode == CAMERA) {
                 val thumbnail: Bitmap = data!!.extras!!.get("data") as Bitmap
-                val saveImageToInternalStorage =
+                saveImageToInternalStorage =
                     saveImageToInternalStorage(thumbnail)
                 Log.e("Saved Image: ", "Path :: $saveImageToInternalStorage")
                 findViewById<AppCompatImageView>(R.id.imageViewPlace)!!.setImageBitmap(thumbnail)
@@ -242,7 +311,7 @@ class AddFavoritePlace : AppCompatActivity(), View.OnClickListener {
     private fun saveImageToInternalStorage(bitmap: Bitmap): Uri {
         val wrapper = ContextWrapper(applicationContext)
         var file = wrapper.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE)
-        file = File(file, "${UUID.randomUUID()}.jpeg") // Directory name for the file path
+        file = File(file, "${UUID.randomUUID()}.jpg") // Directory name for the file path
 
         try {
             val stream: OutputStream = FileOutputStream(file)

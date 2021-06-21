@@ -21,13 +21,13 @@
 
         <!-- FAVORITE PLACES -->
         <activity
-            android:name=".AddFavoritePlace"
+            android:name=".activities.AddFavoritePlaceActivity"
             android:label="Add Favorite Place"
             android:screenOrientation="fullSensor"
             android:theme="@style/CustomNoActionBarTheme" />
 
         <!-- MAIN ACTIVITY -->
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

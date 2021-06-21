@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddFavoritePlace">
+    tools:context=".activities.AddFavoritePlaceActivity">
 
     <!-- TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
