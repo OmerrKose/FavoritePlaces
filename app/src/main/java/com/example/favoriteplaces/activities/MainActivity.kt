@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
      * Create layout manager and assign it as recycler view property
      * Use the adapter (FavoritePlaceAdapter) for the recycler view
      */
-    private fun setUpFavoritePlaceModel(favoritePlaceList: ArrayList<FavoritePlaceModel>){
+    private fun setUpFavoritePlaceModel(favoritePlaceList: ArrayList<FavoritePlaceModel>) {
         val recyclerViewFavPlaces = findViewById<RecyclerView>(R.id.recyclerViewFavoritePlaceList)
         recyclerViewFavPlaces.layoutManager = LinearLayoutManager(this)
 
@@ -42,6 +42,15 @@ class MainActivity : AppCompatActivity() {
 
         val placesAdapter = FavoritePlaceAdapter(this, favoritePlaceList)
         recyclerViewFavPlaces.adapter = placesAdapter
+
+        placesAdapter.setOnClickListener(object : FavoritePlaceAdapter.OnClickListener {
+            override fun onClick(position: Int, model: FavoritePlaceModel) {
+                super.onClick(position, model)
+                val intent = Intent(this@MainActivity, FavoritePlaceDetailsActivity::class.java)
+                intent.putExtra(EXTRA_PLACE_DETAILS, model)
+                startActivity(intent)
+            }
+        })
     }
 
     /**
@@ -78,5 +87,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         // Variable to refresh the main page after favorite place addition
         var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
+        var EXTRA_PLACE_DETAILS = "extra_place_details"
     }
 }

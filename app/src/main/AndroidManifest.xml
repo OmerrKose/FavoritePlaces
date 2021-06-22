@@ -2,14 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.favoriteplaces">
-
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="30"
-        tools:ignore="ScopedStorage"/>
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -18,14 +17,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FavoritePlaces">
-
+        <activity
+            android:name=".activities.FavoritePlaceDetailsActivity"
+            android:label="Favorite Place Details"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/CustomNoActionBarTheme" />
         <!-- FAVORITE PLACES -->
         <activity
             android:name=".activities.AddFavoritePlaceActivity"
             android:label="Add Favorite Place"
             android:screenOrientation="fullSensor"
             android:theme="@style/CustomNoActionBarTheme" />
-
         <!-- MAIN ACTIVITY -->
         <activity android:name=".activities.MainActivity">
             <intent-filter>
