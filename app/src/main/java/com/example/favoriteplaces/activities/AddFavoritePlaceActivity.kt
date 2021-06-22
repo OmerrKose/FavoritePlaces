@@ -147,11 +147,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                         val addFavoritePlace = dataBaseHandler.addFavoritePlace(favoritePlace)
 
                         if (addFavoritePlace > 0) {
-                            Toast.makeText(
-                                this,
-                                "Favorite place saved successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            setResult(Activity.RESULT_OK)
                             finish() // Finish the activity, return to the main activity
                         }
                     }

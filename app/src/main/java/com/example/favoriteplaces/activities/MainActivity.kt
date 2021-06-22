@@ -1,8 +1,10 @@
 package com.example.favoriteplaces.activities
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +15,7 @@ import com.example.favoriteplaces.database.DatabaseHandler
 import com.example.favoriteplaces.models.FavoritePlaceModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.floatingActionButtonFavoritePlace).setOnClickListener {
             val intent = Intent(this, AddFavoritePlaceActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ADD_PLACE_ACTIVITY_REQUEST_CODE)
         }
 
         getFavoritePlacesListFromLocalDatabase()
@@ -56,5 +59,24 @@ class MainActivity : AppCompatActivity() {
             findViewById<RecyclerView>(R.id.recyclerViewFavoritePlaceList).visibility = View.GONE
             findViewById<TextView>(R.id.textViewNoRecordsFound).visibility = View.VISIBLE
         }
+    }
+
+    /**
+     * Function that refreshes the main page when activity is finished on AddFavoritePlaceActivity
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_PLACE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                getFavoritePlacesListFromLocalDatabase()
+            } else {
+                Log.e("Activity", "Cancelled or back pressed")
+            }
+        }
+    }
+
+    companion object {
+        // Variable to refresh the main page after favorite place addition
+        var ADD_PLACE_ACTIVITY_REQUEST_CODE = 1
     }
 }
