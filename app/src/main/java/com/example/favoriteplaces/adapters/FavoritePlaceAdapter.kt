@@ -1,6 +1,8 @@
 package com.example.favoriteplaces.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.favoriteplaces.R
+import com.example.favoriteplaces.activities.AddFavoritePlaceActivity
+import com.example.favoriteplaces.activities.MainActivity
 import com.example.favoriteplaces.models.FavoritePlaceModel
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -49,6 +53,13 @@ open class FavoritePlaceAdapter(
                 }
             }
         }
+    }
+
+    fun notifyEditItem(activity: Activity, position: Int, requestCode: Int) {
+        val intent = Intent(context, AddFavoritePlaceActivity::class.java)
+        intent.putExtra(MainActivity.EXTRA_PLACE_DETAILS, list[position])
+        activity.startActivityForResult(intent, requestCode)
+        notifyItemChanged(position)
     }
 
     fun setOnClickListener(onClickListener: OnClickListener) {

@@ -1,6 +1,7 @@
 package com.example.favoriteplaces.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
@@ -46,6 +47,9 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
     private var mLatitude: Double = 0.0
     private var mLongitude: Double = 0.0
 
+    private var myFavoritePlaceDetails: FavoritePlaceModel? = null
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_favorite_place)
@@ -55,6 +59,11 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         findViewById<Toolbar>(R.id.toolbarAddPlace).setNavigationOnClickListener {
             onBackPressed()
+        }
+
+        if (intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)) {
+            myFavoritePlaceDetails =
+                intent.getParcelableExtra(MainActivity.EXTRA_PLACE_DETAILS) as FavoritePlaceModel?
         }
 
         // Wait for user input in date
@@ -67,6 +76,22 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                 updateDateInView()
             }
         updateDateInView() // This function is called if the user does not enter any value for the date, and assign current date
+
+        if (myFavoritePlaceDetails != null) {
+            supportActionBar?.title = "Edit Favorite Place"
+
+            findViewById<AppCompatEditText>(R.id.editTextTitle).setText(myFavoritePlaceDetails!!.title)
+            findViewById<AppCompatEditText>(R.id.editTextDescription).setText(myFavoritePlaceDetails!!.description)
+            findViewById<AppCompatEditText>(R.id.editTextDate).setText(myFavoritePlaceDetails!!.date)
+            findViewById<AppCompatEditText>(R.id.editTextLocation).setText(myFavoritePlaceDetails!!.location)
+            mLatitude = myFavoritePlaceDetails!!.latitude
+            mLongitude = myFavoritePlaceDetails!!.longitude
+
+            saveImageToInternalStorage = Uri.parse(myFavoritePlaceDetails!!.image)
+
+            findViewById<AppCompatImageView>(R.id.imageViewPlace).setImageURI(saveImageToInternalStorage)
+            findViewById<Button>(R.id.buttonSave).text = "UPDATE"
+        }
 
         findViewById<AppCompatEditText>(R.id.editTextDate).setOnClickListener(this)
         findViewById<TextView>(R.id.textViewAddImage).setOnClickListener(this)

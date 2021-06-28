@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.favoriteplaces.R
 import com.example.favoriteplaces.adapters.FavoritePlaceAdapter
 import com.example.favoriteplaces.database.DatabaseHandler
 import com.example.favoriteplaces.models.FavoritePlaceModel
+import com.example.favoriteplaces.utils.SwipeToEditCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 @Suppress("DEPRECATION")
@@ -51,6 +53,21 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
+
+        val editSwipeHandler = object : SwipeToEditCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter =
+                    findViewById<RecyclerView>(R.id.recyclerViewFavoritePlaceList).adapter as FavoritePlaceAdapter
+                adapter.notifyEditItem(
+                    this@MainActivity,
+                    viewHolder.adapterPosition,
+                    ADD_PLACE_ACTIVITY_REQUEST_CODE
+                )
+            }
+        }
+
+        val editTouchHelper = ItemTouchHelper(editSwipeHandler)
+        editTouchHelper.attachToRecyclerView(findViewById(R.id.recyclerViewFavoritePlaceList))
     }
 
     /**
