@@ -73,6 +73,30 @@ class DatabaseHandler(context: Context) :
     }
 
     /**
+     * This function is similar to the addFavoritePlace,
+     * when user updates the entry to the database this function will be called
+     * function type is changed to int since .update() function returns an int value
+     */
+    fun updateFavoritePlace(favoritePlace: FavoritePlaceModel): Int {
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(KEY_TITLE, favoritePlace.title)
+        contentValues.put(KEY_IMAGE, favoritePlace.image)
+        contentValues.put(KEY_DESCRIPTION, favoritePlace.description)
+        contentValues.put(KEY_DATE, favoritePlace.date)
+        contentValues.put(KEY_LONGITUDE, favoritePlace.longitude)
+        contentValues.put(KEY_LATITUDE, favoritePlace.latitude)
+        contentValues.put(KEY_LOCATION, favoritePlace.location)
+
+        // Update row
+        val update = db.update(TABLE_FAVORITE_PLACE, contentValues, KEY_ID + "=" + favoritePlace.id, null)
+
+        db.close()
+        return update
+    }
+
+    /**
      * This function is to read the database and get the required elements
      * Create a cursor and move in the database,
      * append the database read values into a newly created variable,
@@ -82,7 +106,8 @@ class DatabaseHandler(context: Context) :
      */
 
     fun getFavoritePlace(): ArrayList<FavoritePlaceModel> {
-        val favoritePlaceList = ArrayList<FavoritePlaceModel>() // Array list to store the database read values and return
+        val favoritePlaceList =
+            ArrayList<FavoritePlaceModel>() // Array list to store the database read values and return
         val selectQuery = "SELECT  * FROM $TABLE_FAVORITE_PLACE"
         val database = this.readableDatabase
 

@@ -61,6 +61,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
             onBackPressed()
         }
 
+        // Get the values from the main activity
         if (intent.hasExtra(MainActivity.EXTRA_PLACE_DETAILS)) {
             myFavoritePlaceDetails =
                 intent.getParcelableExtra(MainActivity.EXTRA_PLACE_DETAILS) as FavoritePlaceModel?
@@ -89,7 +90,9 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
 
             saveImageToInternalStorage = Uri.parse(myFavoritePlaceDetails!!.image)
 
-            findViewById<AppCompatImageView>(R.id.imageViewPlace).setImageURI(saveImageToInternalStorage)
+            findViewById<AppCompatImageView>(R.id.imageViewPlace).setImageURI(
+                saveImageToInternalStorage
+            )
             findViewById<Button>(R.id.buttonSave).text = "UPDATE"
         }
 
@@ -159,7 +162,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     else -> {
                         val favoritePlace = FavoritePlaceModel(
-                            0,
+                            if (myFavoritePlaceDetails == null) 0 else myFavoritePlaceDetails!!.id,
                             findViewById<AppCompatEditText>(R.id.editTextTitle).text.toString(),
                             saveImageToInternalStorage.toString(),
                             findViewById<AppCompatEditText>(R.id.editTextDescription).text.toString(),
@@ -169,11 +172,18 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                             mLongitude
                         )
                         val dataBaseHandler = DatabaseHandler(this) // Create a database object
-                        val addFavoritePlace = dataBaseHandler.addFavoritePlace(favoritePlace)
-
-                        if (addFavoritePlace > 0) {
-                            setResult(Activity.RESULT_OK)
-                            finish() // Finish the activity, return to the main activity
+                        if (myFavoritePlaceDetails == null) {
+                            val addFavoritePlace = dataBaseHandler.addFavoritePlace(favoritePlace)
+                            if (addFavoritePlace > 0) {
+                                setResult(Activity.RESULT_OK)
+                                finish() // Finish the activity, return to the main activity
+                            }
+                        } else {
+                            val updateFavoritePlace = dataBaseHandler.updateFavoritePlace(favoritePlace)
+                            if (updateFavoritePlace > 0) {
+                                setResult(Activity.RESULT_OK)
+                                finish() // Finish the activity, return to the main activity
+                            }
                         }
                     }
                 }
