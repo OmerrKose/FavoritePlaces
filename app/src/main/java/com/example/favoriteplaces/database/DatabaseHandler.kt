@@ -90,10 +90,22 @@ class DatabaseHandler(context: Context) :
         contentValues.put(KEY_LOCATION, favoritePlace.location)
 
         // Update row
-        val update = db.update(TABLE_FAVORITE_PLACE, contentValues, KEY_ID + "=" + favoritePlace.id, null)
+        val update =
+            db.update(TABLE_FAVORITE_PLACE, contentValues, KEY_ID + "=" + favoritePlace.id, null)
 
         db.close()
         return update
+    }
+
+    /**
+     * This function is to delete the database entries
+     */
+    fun deleteFavoritePlace(favoritePlace: FavoritePlaceModel): Int {
+        val db = this.writableDatabase
+        val delete = db.delete(TABLE_FAVORITE_PLACE, KEY_ID + "=" + favoritePlace.id, null)
+
+        db.close()
+        return delete
     }
 
     /**

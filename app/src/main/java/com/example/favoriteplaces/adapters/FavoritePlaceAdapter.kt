@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.favoriteplaces.R
 import com.example.favoriteplaces.activities.AddFavoritePlaceActivity
 import com.example.favoriteplaces.activities.MainActivity
+import com.example.favoriteplaces.database.DatabaseHandler
 import com.example.favoriteplaces.models.FavoritePlaceModel
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -55,11 +56,25 @@ open class FavoritePlaceAdapter(
         }
     }
 
+    /**
+     * This function updates the recycler view when user updates a database entry
+     */
     fun notifyEditItem(activity: Activity, position: Int, requestCode: Int) {
         val intent = Intent(context, AddFavoritePlaceActivity::class.java)
         intent.putExtra(MainActivity.EXTRA_PLACE_DETAILS, list[position])
         activity.startActivityForResult(intent, requestCode)
-        notifyItemChanged(position)
+        notifyItemChanged(position) // Update the recycler view
+    }
+    /**
+     * This function updates the recycler view when user deletes a database entry
+     */
+    fun removeAt(position: Int) {
+        val databaseHandler = DatabaseHandler(context)
+        val isDeleted = databaseHandler.deleteFavoritePlace(list[position])
+        if(isDeleted > 0) {
+            list.removeAt(position)
+            notifyItemRemoved(position) // Update the recycler view
+        }
     }
 
     fun setOnClickListener(onClickListener: OnClickListener) {

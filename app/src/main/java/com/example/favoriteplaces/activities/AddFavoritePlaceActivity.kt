@@ -49,7 +49,6 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
 
     private var myFavoritePlaceDetails: FavoritePlaceModel? = null
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_favorite_place)
@@ -93,7 +92,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
             findViewById<AppCompatImageView>(R.id.imageViewPlace).setImageURI(
                 saveImageToInternalStorage
             )
-            findViewById<Button>(R.id.buttonSave).text = "UPDATE"
+            findViewById<Button>(R.id.buttonSave).text = getString(R.string.update)
         }
 
         findViewById<AppCompatEditText>(R.id.editTextDate).setOnClickListener(this)

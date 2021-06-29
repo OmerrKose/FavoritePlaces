@@ -15,6 +15,7 @@ import com.example.favoriteplaces.adapters.FavoritePlaceAdapter
 import com.example.favoriteplaces.database.DatabaseHandler
 import com.example.favoriteplaces.models.FavoritePlaceModel
 import com.example.favoriteplaces.utils.SwipeToEditCallback
+import com.example.favoriteplaces.utils.SwipeToDeleteCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 @Suppress("DEPRECATION")
@@ -54,6 +55,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        /**
+         * Piece of code to implement the swipe to edit action
+         */
         val editSwipeHandler = object : SwipeToEditCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter =
@@ -65,9 +69,23 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+        val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
+        editItemTouchHelper.attachToRecyclerView(findViewById(R.id.recyclerViewFavoritePlaceList))
 
-        val editTouchHelper = ItemTouchHelper(editSwipeHandler)
-        editTouchHelper.attachToRecyclerView(findViewById(R.id.recyclerViewFavoritePlaceList))
+        /**
+         * Piece of code to implement the swipe to delete action
+         */
+        val deleteSwipeHandler = object : SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter =
+                    findViewById<RecyclerView>(R.id.recyclerViewFavoritePlaceList).adapter as FavoritePlaceAdapter
+                adapter.removeAt(viewHolder.adapterPosition)
+
+                getFavoritePlacesListFromLocalDatabase()
+            }
+        }
+        val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+        deleteItemTouchHelper.attachToRecyclerView(findViewById(R.id.recyclerViewFavoritePlaceList))
     }
 
     /**

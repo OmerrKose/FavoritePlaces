@@ -10,7 +10,7 @@ import com.example.favoriteplaces.R
 
 abstract class SwipeToEditCallback(context: Context) :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-    private val editIcon = ContextCompat.getDrawable(context, R.drawable.ic_edit_button)
+    private val editIcon = ContextCompat.getDrawable(context, R.drawable.ic_edit_swipe)
     private val intrinsicWidth = editIcon!!.intrinsicWidth
     private val intrinsicHeight = editIcon!!.intrinsicHeight
     private val background = ColorDrawable()
