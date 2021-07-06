@@ -1,7 +1,6 @@
 package com.example.favoriteplaces.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ActivityNotFoundException
@@ -26,6 +25,11 @@ import androidx.appcompat.widget.Toolbar
 import com.example.favoriteplaces.R
 import com.example.favoriteplaces.database.DatabaseHandler
 import com.example.favoriteplaces.models.FavoritePlaceModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -58,6 +62,13 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         findViewById<Toolbar>(R.id.toolbarAddPlace).setNavigationOnClickListener {
             onBackPressed()
+        }
+
+        if (!Places.isInitialized()) {
+            Places.initialize(
+                this@AddFavoritePlaceActivity,
+                resources.getString(R.string.google_maps_key)
+            )
         }
 
         // Get the values from the main activity
@@ -98,6 +109,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<AppCompatEditText>(R.id.editTextDate).setOnClickListener(this)
         findViewById<TextView>(R.id.textViewAddImage).setOnClickListener(this)
         findViewById<Button>(R.id.buttonSave).setOnClickListener(this)
+        findViewById<AppCompatEditText>(R.id.editTextLocation).setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -178,13 +190,34 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                                 finish() // Finish the activity, return to the main activity
                             }
                         } else {
-                            val updateFavoritePlace = dataBaseHandler.updateFavoritePlace(favoritePlace)
+                            val updateFavoritePlace =
+                                dataBaseHandler.updateFavoritePlace(favoritePlace)
                             if (updateFavoritePlace > 0) {
                                 setResult(Activity.RESULT_OK)
                                 finish() // Finish the activity, return to the main activity
                             }
                         }
                     }
+                }
+            }
+
+            /**
+             * Open Google Maps API when clicked on location input
+             */
+            R.id.editTextLocation -> {
+                try {
+                    // These are the list of fields which we required is passed
+                    val fields = listOf(
+                        Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG,
+                        Place.Field.ADDRESS
+                    )
+                    // Start the autocomplete intent with a unique request code.
+                    val intent =
+                        Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                            .build(this@AddFavoritePlaceActivity)
+                    startActivityForResult(intent, PLACE_AUTO_COMPLETE_REQUEST_CODE)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -231,6 +264,11 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
                     saveImageToInternalStorage(thumbnail)
                 Log.e("Saved Image: ", "Path :: $saveImageToInternalStorage")
                 findViewById<AppCompatImageView>(R.id.imageViewPlace)!!.setImageBitmap(thumbnail)
+            } else if (requestCode == PLACE_AUTO_COMPLETE_REQUEST_CODE) {
+                val place: Place = Autocomplete.getPlaceFromIntent(data!!)
+                findViewById<AppCompatEditText>(R.id.editTextLocation).setText(place.address)
+                mLatitude = place.latLng!!.latitude
+                mLongitude = place.latLng!!.longitude
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             Log.e("Cancelled", "Cancelled")
@@ -358,6 +396,7 @@ class AddFavoritePlaceActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
         private const val GALLERY = 1
         private const val CAMERA = 2
+        private const val PLACE_AUTO_COMPLETE_REQUEST_CODE = 3
         private const val IMAGE_DIRECTORY = "FavoritePlaces"
     }
 }

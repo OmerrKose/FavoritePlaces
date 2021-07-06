@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.favoriteplaces">
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
@@ -17,17 +25,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FavoritePlaces">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api_key" />
+
+        <!-- FAVORITE PLACE DETAILS -->
         <activity
             android:name=".activities.FavoritePlaceDetailsActivity"
             android:label="Favorite Place Details"
             android:screenOrientation="fullSensor"
             android:theme="@style/CustomNoActionBarTheme" />
+
         <!-- FAVORITE PLACES -->
         <activity
             android:name=".activities.AddFavoritePlaceActivity"
             android:label="Add Favorite Place"
             android:screenOrientation="fullSensor"
             android:theme="@style/CustomNoActionBarTheme" />
+
         <!-- MAIN ACTIVITY -->
         <activity android:name=".activities.MainActivity">
             <intent-filter>
