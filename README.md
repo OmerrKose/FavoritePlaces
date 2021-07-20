@@ -1,5 +1,5 @@
 # FavoritePlaces
-App that based on [Udemy Kotlin course](https://www.udemy.com/course/android-kotlin-developer/learn/lecture/16824572#overview). App allows users to choose a specific location and save them to their lists. For exercise purpose.
+App that based on [Udemy Kotlin course](https://www.udemy.com/course/android-kotlin-developer/learn/lecture/16824572#overview), allowing users to choose a specific location and save them to their lists. For exercise purposes only.
 In this app user can sace the places that he she wishes. App uses Google Maps API services for map ability. In order to use the application one must enter his/her 
 Google API key to use Google map services. 
 After entering a proper key user can interact with map and select any desired location to save. 
